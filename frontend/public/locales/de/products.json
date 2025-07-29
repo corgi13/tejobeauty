@@ -1,0 +1,93 @@
+{
+  "categories": {
+    "nail-polish": "Nagellack",
+    "nail-care": "Nagelpflege",
+    "nail-art": "Nail Art",
+    "tools": "Werkzeuge",
+    "accessories": "Zubehör",
+    "professional": "Professionell"
+  },
+  "filters": {
+    "brand": "Marke",
+    "color": "Farbe",
+    "finish": "Finish",
+    "size": "Größe",
+    "priceRange": "Preisbereich",
+    "availability": "Verfügbarkeit",
+    "rating": "Bewertung"
+  },
+  "sorting": {
+    "featured": "Empfohlen",
+    "newest": "Neueste",
+    "priceAsc": "Preis: Niedrig zu Hoch",
+    "priceDesc": "Preis: Hoch zu Niedrig",
+    "nameAsc": "Name: A-Z",
+    "nameDesc": "Name: Z-A",
+    "rating": "Bewertung",
+    "popularity": "Beliebtheit"
+  },
+  "details": {
+    "sku": "Artikelnummer",
+    "brand": "Marke",
+    "category": "Kategorie",
+    "tags": "Tags",
+    "ingredients": "Inhaltsstoffe",
+    "howToUse": "Anwendung",
+    "warnings": "Warnhinweise",
+    "storage": "Lagerung",
+    "shelfLife": "Haltbarkeit",
+    "madeIn": "Hergestellt in",
+    "volume": "Volumen",
+    "weight": "Gewicht",
+    "dimensions": "Abmessungen"
+  },
+  "reviews": {
+    "title": "Kundenbewertungen",
+    "writeReview": "Bewertung schreiben",
+    "rating": "Bewertung",
+    "helpful": "Hilfreich",
+    "notHelpful": "Nicht hilfreich",
+    "verified": "Verifizierter Kauf",
+    "wouldRecommend": "Würde empfehlen",
+    "wouldNotRecommend": "Würde nicht empfehlen",
+    "reviewTitle": "Bewertungstitel",
+    "reviewText": "Ihre Bewertung",
+    "submitReview": "Bewertung abgeben",
+    "thankYou": "Vielen Dank für Ihre Bewertung!",
+    "loginToReview": "Melden Sie sich an, um eine Bewertung zu schreiben"
+  },
+  "variants": {
+    "color": "Farbe",
+    "size": "Größe",
+    "finish": "Finish",
+    "selectVariant": "Variante auswählen",
+    "outOfStock": "Nicht verfügbar"
+  },
+  "actions": {
+    "addToCart": "In den Warenkorb",
+    "addToWishlist": "Zur Wunschliste",
+    "removeFromWishlist": "Von Wunschliste entfernen",
+    "share": "Teilen",
+    "compare": "Vergleichen",
+    "quickView": "Schnellansicht",
+    "viewFullDetails": "Vollständige Details anzeigen"
+  },
+  "messages": {
+    "addedToCart": "Zum Warenkorb hinzugefügt",
+    "addedToWishlist": "Zur Wunschliste hinzugefügt",
+    "removedFromWishlist": "Von Wunschliste entfernt",
+    "outOfStock": "Dieses Produkt ist derzeit nicht verfügbar",
+    "lowStock": "Nur noch {{count}} auf Lager",
+    "backInStock": "Wieder verfügbar",
+    "comingSoon": "Demnächst verfügbar"
+  },
+  "search": {
+    "placeholder": "Produkte suchen...",
+    "noResults": "Keine Produkte gefunden",
+    "resultsFor": "Ergebnisse für \"{{query}}\"",
+    "suggestions": "Vorschläge",
+    "popularSearches": "Beliebte Suchen",
+    "recentSearches": "Letzte Suchen",
+    "clearHistory": "Verlauf löschen"
+  }
+}

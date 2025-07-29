@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analitika - Tejo Nails Platform</title>
+    <link rel="stylesheet" href="/css/analytics-dashboard.css" />
+  </head>
+  <body>
+    <div id="app" class="analytics-page">
+      <header class="main-header">
+        <div class="logo">Tejo Nails</div>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="/">Početna</a></li>
+            <li><a href="/products">Proizvodi</a></li>
+            <li><a href="/orders">Narudžbe</a></li>
+            <li><a href="/analytics" class="active">Analitika</a></li>
+            <li><a href="/settings">Postavke</a></li>
+          </ul>
+        </nav>
+        <div class="user-menu">
+          <img src="/images/avatar.jpg" alt="Admin" class="avatar" />
+          <span>Admin</span>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h1>Analitika poslovanja</h1>
+          <div class="actions">
+            <button id="export-report" class="btn btn-primary">
+              Izvezi izvještaj
+            </button>
+            <button id="print-dashboard" class="btn btn-secondary">
+              Ispiši
+            </button>
+          </div>
+        </div>
+
+        <div id="analytics-dashboard" class="dashboard-wrapper">
+          <!-- Ovdje će se prikazati dashboard -->
+        </div>
+      </main>
+
+      <footer class="main-footer">
+        <p>&copy; 2025 Tejo Nails Platform. Sva prava pridržana.</p>
+      </footer>
+    </div>
+
+    <script src="/js/analytics.js"></script>
+    <!-- Dodavanje script tagova za TS compile -->
+    <script src="/dist/services/AnalyticsService.js"></script>
+    <script src="/dist/components/AnalyticsDashboard.js"></script>
+    <script src="/dist/pages/AnalyticsDashboardPage.js"></script>
+  </body>
+</html>

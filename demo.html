@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tejo Nails - Croatian Nail Care Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #764ba2;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .lang-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .lang-btn:hover, .lang-btn.active {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .api-demo {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .api-demo h3 {
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+        
+        .api-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .api-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .api-btn:hover {
+            background: #764ba2;
+        }
+        
+        .api-response {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 300px;
+            overflow-y: auto;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇭🇷 Tejo Nails Platform</h1>
+            <p id="tagline">Professional Nail Care Products for Croatia & Europe</p>
+            
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="setLanguage('en')" data-lang="en">🇬🇧 English</button>
+                <button class="lang-btn" onclick="setLanguage('hr')" data-lang="hr">🇭🇷 Hrvatski</button>
+                <button class="lang-btn" onclick="setLanguage('de')" data-lang="de">🇩🇪 Deutsch</button>
+                <button class="lang-btn" onclick="setLanguage('it')" data-lang="it">🇮🇹 Italiano</button>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>🌍 8-Language European Support</h3>
+                <p id="feature1">Complete support for Croatian, English, German, Italian, French, Spanish, Portuguese, and Dutch markets with localized content, currency formatting, and regional address validation.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🇭🇷 Croatian Business Suite</h3>
+                <p id="feature2">Complete Croatian business support: OIB validation, PDV tax calculation, Croatian shipping zones, business registration requirements, and beauty industry licensing.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>💼 Professional Portal</h3>
+                <p id="feature3">Dedicated portal for nail salons and professionals with bulk ordering, commission tracking, and business verification.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🛒 Complete E-commerce</h3>
+                <p id="feature4">Full shopping cart, checkout, payment processing, order management, and customer account system.</p>
+            </div>
+        </div>
+        
+        <div class="api-demo">
+            <h3><span class="status-indicator status-online"></span>Live API Demo</h3>
+            <p>The backend API is running and ready! Try these endpoints:</p>
+            
+            <div class="api-buttons">
+                <button class="api-btn" onclick="testAPI('/api/system-health')">System Health</button>
+                <button class="api-btn" onclick="testAPI('/api/products')">Products</button>
+                <button class="api-btn" onclick="testAPI('/api/categories')">Categories</button>
+                <button class="api-btn" onclick="testAPI('/api/croatia/tax/rates')">🇭🇷 Croatian Tax Rates</button>
+                <button class="api-btn" onclick="testAPI('/api/croatia/business/counties')">🇭🇷 Croatian Counties</button>
+                <button class="api-btn" onclick="testAPI('/api/croatia/shipping/zones')">🇭🇷 Shipping Zones</button>
+                <button class="api-btn" onclick="testCroatianFeatures()">🇭🇷 Test Croatian Features</button>
+                <button class="api-btn" onclick="openSwagger()">API Documentation</button>
+            </div>
+            
+            <div class="api-response" id="apiResponse">
+                Click any button above to test the live API endpoints!
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 Tejo Nails Platform - Perfect for Croatian & European Markets</p>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                tagline: "Professional Nail Care Products for Croatia & Europe",
+                feature1: "Complete support for Croatian, English, German, Italian, French, Spanish, Portuguese, and Dutch markets with localized content, currency formatting, and regional address validation.",
+                feature2: "Croatian postal code validation, OIB support for businesses, EUR pricing, and products inspired by Croatian coast and culture.",
+                feature3: "Dedicated portal for nail salons and professionals with bulk ordering, commission tracking, and business verification.",
+                feature4: "Full shopping cart, checkout, payment processing, order management, and customer account system."
+            },
+            hr: {
+                tagline: "Profesionalni proizvodi za njegu noktiju za Hrvatsku i Europu",
+                feature1: "Potpuna podrška za hrvatska, engleska, njemačka, talijanska, francuska, španjolska, portugalska i nizozemska tržišta s lokaliziranim sadržajem, formatiranjem valute i regionalnom validacijom adresa.",
+                feature2: "Potpuna podrška za hrvatska poduzeća: OIB validacija, PDV izračun, hrvatske dostave zone, zahtjevi za registraciju poduzeća i licenciranje kozmetičke industrije.",
+                feature3: "Namjenski portal za kozmetičke salone i profesionalce s masovnim naručivanjem, praćenjem provizija i poslovnom verifikacijom.",
+                feature4: "Potpuna košarica, naplata, obrada plaćanja, upravljanje narudžbama i sustav korisničkih računa."
+            },
+            de: {
+                tagline: "Professionelle Nagelpflegeprodukte für Kroatien und Europa",
+                feature1: "Vollständige Unterstützung für kroatische, englische, deutsche und italienische Märkte mit lokalisierten Inhalten, Währungsformatierung und regionaler Adressvalidierung.",
+                feature2: "Kroatische Postleitzahl-Validierung, OIB-Unterstützung für Unternehmen, EUR-Preise und Produkte inspiriert von der kroatischen Küste und Kultur.",
+                feature3: "Spezielles Portal für Nagelstudios und Profis mit Großbestellungen, Provisionserfassung und Geschäftsverifizierung.",
+                feature4: "Vollständiger Warenkorb, Checkout, Zahlungsabwicklung, Bestellverwaltung und Kundenkontosystem."
+            },
+            it: {
+                tagline: "Prodotti professionali per la cura delle unghie per Croazia ed Europa",
+                feature1: "Supporto completo per i mercati croato, inglese, tedesco e italiano con contenuti localizzati, formattazione valuta e validazione indirizzi regionali.",
+                feature2: "Validazione codici postali croati, supporto OIB per aziende, prezzi EUR e prodotti ispirati alla costa e cultura croata.",
+                feature3: "Portale dedicato per centri estetici e professionisti con ordini all'ingrosso, tracciamento commissioni e verifica aziendale.",
+                feature4: "Carrello completo, checkout, elaborazione pagamenti, gestione ordini e sistema account clienti."
+            }
+        };
+
+        function setLanguage(lang) {
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update content
+            const t = translations[lang];
+            document.getElementById('tagline').textContent = t.tagline;
+            document.getElementById('feature1').textContent = t.feature1;
+            document.getElementById('feature2').textContent = t.feature2;
+            document.getElementById('feature3').textContent = t.feature3;
+            document.getElementById('feature4').textContent = t.feature4;
+        }
+
+        async function testAPI(endpoint) {
+            const responseDiv = document.getElementById('apiResponse');
+            responseDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch(`http://localhost:3002${endpoint}`);
+                const data = await response.json();
+                responseDiv.innerHTML = `<strong>GET ${endpoint}</strong><br><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                responseDiv.innerHTML = `<strong>Error:</strong> ${error.message}<br><br>Make sure the backend is running on http://localhost:3002`;
+            }
+        }
+
+        function openSwagger() {
+            window.open('http://localhost:3002/api/docs', '_blank');
+        }
+
+        async function testCroatianFeatures() {
+            const responseDiv = document.getElementById('apiResponse');
+            responseDiv.innerHTML = 'Testing Croatian Features...';
+
+            try {
+                // Test multiple Croatian features
+                const tests = [
+                    { name: 'Croatian Tax Calculation', url: '/api/croatia/tax/calculate', method: 'POST', body: { subtotal: 100, category: 'cosmetic' } },
+                    { name: 'OIB Validation', url: '/api/croatia/business/oib/validate/12345678901' },
+                    { name: 'Zagreb Shipping', url: '/api/croatia/shipping/calculate?city=Zagreb&orderValue=150&method=standard' },
+                    { name: 'Split Shipping', url: '/api/croatia/shipping/calculate?city=Split&orderValue=300&method=express' },
+                    { name: 'Croatian Holidays', url: '/api/croatia/holidays' }
+                ];
+
+                let results = '<strong>🇭🇷 Croatian Features Test Results:</strong><br><br>';
+
+                for (const test of tests) {
+                    try {
+                        const options = {
+                            method: test.method || 'GET',
+                            headers: { 'Content-Type': 'application/json' }
+                        };
+
+                        if (test.body) {
+                            options.body = JSON.stringify(test.body);
+                        }
+
+                        const response = await fetch(`http://localhost:3002${test.url}`, options);
+                        const data = await response.json();
+
+                        results += `✅ <strong>${test.name}:</strong> Success<br>`;
+                        if (test.name === 'Croatian Tax Calculation') {
+                            results += `&nbsp;&nbsp;&nbsp;PDV: ${data.data.pdvAmount}€ (${(data.data.pdvRate * 100).toFixed(0)}%)<br>`;
+                        } else if (test.name === 'Zagreb Shipping') {
+                            results += `&nbsp;&nbsp;&nbsp;Cost: ${data.data.cost}€, Delivery: ${data.data.estimatedDelivery}<br>`;
+                        } else if (test.name === 'Split Shipping') {
+                            results += `&nbsp;&nbsp;&nbsp;Cost: ${data.data.cost}€, Carrier: ${data.data.carrier}<br>`;
+                        }
+                        results += '<br>';
+                    } catch (error) {
+                        results += `❌ <strong>${test.name}:</strong> ${error.message}<br><br>`;
+                    }
+                }
+
+                responseDiv.innerHTML = results;
+            } catch (error) {
+                responseDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

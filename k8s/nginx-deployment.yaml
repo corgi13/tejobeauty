@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: tejo-nails
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: tejo-nails/nginx:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: DOMAIN
+              value: "tejo-nails.com"
+            - name: ENABLE_LETSENCRYPT
+              value: "true"
+          volumeMounts:
+            - name: nginx-ssl
+              mountPath: /etc/nginx/ssl
+            - name: nginx-logs
+              mountPath: /var/log/nginx
+            - name: certbot-webroot
+              mountPath: /var/www/certbot
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: nginx-ssl
+          persistentVolumeClaim:
+            claimName: nginx-ssl-pvc
+        - name: nginx-logs
+          persistentVolumeClaim:
+            claimName: nginx-logs-pvc
+        - name: certbot-webroot
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: tejo-nails
+spec:
+  selector:
+    app: nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-ssl-pvc
+  namespace: tejo-nails
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-logs-pvc
+  namespace: tejo-nails
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Confirmation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 3px solid #5a67d8;
+      }
+      .logo {
+        max-width: 150px;
+        margin-bottom: 10px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        border-top: 1px solid #ddd;
+      }
+      .order-details {
+        margin: 20px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+      }
+      .order-summary {
+        margin: 20px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      .button {
+        display: inline-block;
+        background-color: #5a67d8;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+      .total-row {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="{{logoUrl}}" alt="Tejo Nails" class="logo" />
+        <h1>Order Confirmation</h1>
+      </div>
+
+      <div class="content">
+        <p>Dear {{customerName}},</p>
+
+        <p>
+          Thank you for your order! We're pleased to confirm that we've received
+          your order and it's being processed.
+        </p>
+
+        <div class="order-details">
+          <h2>Order Details</h2>
+          <p><strong>Order Number:</strong> {{orderNumber}}</p>
+          <p><strong>Order Date:</strong> {{orderDate}}</p>
+          <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+        </div>
+
+        <div class="order-summary">
+          <h2>Order Summary</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each items}}
+              <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.price}}</td>
+              </tr>
+              {{/each}}
+              <tr>
+                <td colspan="2">Subtotal</td>
+                <td>{{subtotal}}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Shipping</td>
+                <td>{{shipping}}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Tax</td>
+                <td>{{tax}}</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2">Total</td>
+                <td>{{total}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="shipping-info">
+          <h2>Shipping Information</h2>
+          <p>
+            {{shippingAddress.name}}<br />
+            {{shippingAddress.street}}<br />
+            {{shippingAddress.city}}, {{shippingAddress.state}}
+            {{shippingAddress.postalCode}}<br />
+            {{shippingAddress.country}}
+          </p>
+
+          <p><strong>Shipping Method:</strong> {{shippingMethod}}</p>
+          <p><strong>Estimated Delivery:</strong> {{estimatedDelivery}}</p>
+        </div>
+
+        <p>You can track your order status by clicking the button below:</p>
+
+        <a href="{{trackingUrl}}" class="button">Track Your Order</a>
+
+        <p>
+          If you have any questions about your order, please contact our
+          customer service team at
+          <a href="mailto:support@tejonails.com">support@tejonails.com</a> or
+          call us at +1 (555) 123-4567.
+        </p>
+
+        <p>Thank you for shopping with us!</p>
+
+        <p>
+          Best regards,<br />
+          The Tejo Nails Team
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>&copy; {{currentYear}} Tejo Nails. All rights reserved.</p>
+        <p>123 Main Street, New York, NY 10001</p>
+        <p>
+          <a href="{{unsubscribeUrl}}">Unsubscribe</a> |
+          <a href="{{privacyUrl}}">Privacy Policy</a> |
+          <a href="{{termsUrl}}">Terms of Service</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

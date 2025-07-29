@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Potvrda narudžbe</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 3px solid #5a67d8;
+      }
+      .logo {
+        max-width: 150px;
+        margin-bottom: 10px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        border-top: 1px solid #ddd;
+      }
+      .order-details {
+        margin: 20px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+      }
+      .order-summary {
+        margin: 20px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      .button {
+        display: inline-block;
+        background-color: #5a67d8;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+      .total-row {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="{{logoUrl}}" alt="Tejo Nails" class="logo" />
+        <h1>Potvrda narudžbe</h1>
+      </div>
+
+      <div class="content">
+        <p>Poštovani/a {{customerName}},</p>
+
+        <p>
+          Hvala Vam na narudžbi! Sa zadovoljstvom potvrđujemo da smo zaprimili
+          Vašu narudžbu i da je u obradi.
+        </p>
+
+        <div class="order-details">
+          <h2>Detalji narudžbe</h2>
+          <p><strong>Broj narudžbe:</strong> {{orderNumber}}</p>
+          <p><strong>Datum narudžbe:</strong> {{orderDate}}</p>
+          <p><strong>Način plaćanja:</strong> {{paymentMethod}}</p>
+        </div>
+
+        <div class="order-summary">
+          <h2>Sažetak narudžbe</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Proizvod</th>
+                <th>Količina</th>
+                <th>Cijena</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each items}}
+              <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.price}}</td>
+              </tr>
+              {{/each}}
+              <tr>
+                <td colspan="2">Međuzbroj</td>
+                <td>{{subtotal}}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Dostava</td>
+                <td>{{shipping}}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Porez</td>
+                <td>{{tax}}</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2">Ukupno</td>
+                <td>{{total}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="shipping-info">
+          <h2>Podaci za dostavu</h2>
+          <p>
+            {{shippingAddress.name}}<br />
+            {{shippingAddress.street}}<br />
+            {{shippingAddress.postalCode}} {{shippingAddress.city}}<br />
+            {{shippingAddress.country}}
+          </p>
+
+          <p><strong>Način dostave:</strong> {{shippingMethod}}</p>
+          <p>
+            <strong>Procijenjeni datum dostave:</strong> {{estimatedDelivery}}
+          </p>
+        </div>
+
+        <p>Status svoje narudžbe možete pratiti klikom na gumb ispod:</p>
+
+        <a href="{{trackingUrl}}" class="button">Pratite svoju narudžbu</a>
+
+        <p>
+          Ako imate bilo kakvih pitanja o svojoj narudžbi, molimo kontaktirajte
+          našu korisničku podršku na
+          <a href="mailto:podrska@tejonails.com">podrska@tejonails.com</a> ili
+          nas nazovite na +385 1 234 5678.
+        </p>
+
+        <p>Hvala Vam na kupnji!</p>
+
+        <p>
+          Srdačan pozdrav,<br />
+          Tim Tejo Nails
+        </p>
+      </div>
+
+      <div class="footer">
+        <p>&copy; 2025 Tejo Nails. Sva prava pridržana.</p>
+        <p>Ilica 123, 10000 Zagreb, Hrvatska</p>
+        <p>
+          <a href="{{unsubscribeUrl}}">Odjava</a> |
+          <a href="{{privacyUrl}}">Politika privatnosti</a> |
+          <a href="{{termsUrl}}">Uvjeti korištenja</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

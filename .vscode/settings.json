@@ -1,0 +1,6 @@
+{
+    "snyk.issueViewOptions": {
+        "ignoredIssues": true
+    },
+    "claudeCodeChat.permissions.yoloMode": true
+}

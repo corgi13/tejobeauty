@@ -1,0 +1,85 @@
+{
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "email": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "password": "Das Passwort muss mindestens 8 Zeichen lang sein",
+    "passwordMatch": "Die Passwörter stimmen nicht überein",
+    "phone": "Bitte geben Sie eine gültige Telefonnummer ein",
+    "postalCode": "Bitte geben Sie eine gültige Postleitzahl ein",
+    "minLength": "Mindestens {{min}} Zeichen erforderlich",
+    "maxLength": "Maximal {{max}} Zeichen erlaubt",
+    "min": "Der Wert muss mindestens {{min}} sein",
+    "max": "Der Wert darf höchstens {{max}} sein",
+    "numeric": "Nur Zahlen erlaubt",
+    "alphanumeric": "Nur Buchstaben und Zahlen erlaubt"
+  },
+  "auth": {
+    "invalidCredentials": "Ungültige Anmeldedaten",
+    "userNotFound": "Benutzer nicht gefunden",
+    "emailAlreadyExists": "Diese E-Mail-Adresse ist bereits registriert",
+    "passwordTooWeak": "Das Passwort ist zu schwach",
+    "accountLocked": "Konto gesperrt. Versuchen Sie es später erneut",
+    "emailNotVerified": "E-Mail-Adresse nicht bestätigt",
+    "tokenExpired": "Token abgelaufen",
+    "tokenInvalid": "Ungültiger Token",
+    "sessionExpired": "Sitzung abgelaufen. Bitte melden Sie sich erneut an",
+    "accessDenied": "Zugriff verweigert",
+    "mfaRequired": "Zwei-Faktor-Authentifizierung erforderlich",
+    "mfaInvalid": "Ungültiger Authentifizierungscode"
+  },
+  "payment": {
+    "cardDeclined": "Karte abgelehnt",
+    "insufficientFunds": "Unzureichende Deckung",
+    "cardExpired": "Karte abgelaufen",
+    "invalidCard": "Ungültige Kartennummer",
+    "invalidCvv": "Ungültiger CVV-Code",
+    "paymentFailed": "Zahlung fehlgeschlagen",
+    "paymentTimeout": "Zahlung zeitüberschreitung",
+    "processingError": "Verarbeitungsfehler",
+    "refundFailed": "Erstattung fehlgeschlagen",
+    "refundNotAllowed": "Erstattung nicht möglich"
+  },
+  "order": {
+    "outOfStock": "Artikel nicht auf Lager",
+    "invalidQuantity": "Ungültige Menge",
+    "orderNotFound": "Bestellung nicht gefunden",
+    "cannotCancel": "Bestellung kann nicht storniert werden",
+    "cannotModify": "Bestellung kann nicht geändert werden",
+    "shippingNotAvailable": "Versand nicht verfügbar",
+    "addressInvalid": "Ungültige Adresse",
+    "minimumOrderNotMet": "Mindestbestellwert nicht erreicht",
+    "maximumOrderExceeded": "Maximaler Bestellwert überschritten"
+  },
+  "product": {
+    "notFound": "Produkt nicht gefunden",
+    "unavailable": "Produkt nicht verfügbar",
+    "variantNotFound": "Variante nicht gefunden",
+    "priceChanged": "Preis hat sich geändert",
+    "reviewNotAllowed": "Bewertung nicht erlaubt",
+    "alreadyReviewed": "Sie haben dieses Produkt bereits bewertet"
+  },
+  "network": {
+    "connectionError": "Verbindungsfehler",
+    "timeout": "Zeitüberschreitung",
+    "serverError": "Serverfehler",
+    "notFound": "Seite nicht gefunden",
+    "forbidden": "Zugriff verboten",
+    "tooManyRequests": "Zu viele Anfragen",
+    "maintenance": "Wartungsmodus",
+    "offline": "Keine Internetverbindung"
+  },
+  "file": {
+    "tooLarge": "Datei zu groß",
+    "invalidFormat": "Ungültiges Dateiformat",
+    "uploadFailed": "Upload fehlgeschlagen",
+    "notFound": "Datei nicht gefunden",
+    "corrupted": "Datei beschädigt"
+  },
+  "general": {
+    "unknownError": "Unbekannter Fehler",
+    "tryAgain": "Bitte versuchen Sie es erneut",
+    "contactSupport": "Kontaktieren Sie den Support",
+    "temporaryError": "Temporärer Fehler",
+    "maintenanceMode": "Wartungsmodus aktiv"
+  }
+}

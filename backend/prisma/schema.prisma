@@ -1,0 +1,332 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  password          String?
+  firstName         String?
+  lastName          String?
+  role              Role      @default(CUSTOMER)
+  isEmailVerified   Boolean   @default(false)
+  mfaEnabled        Boolean   @default(false)
+  mfaSecret         String?
+  language          String    @default("en")
+  emailMarketingConsent Boolean @default(false)
+  emailOrderUpdates Boolean   @default(true)
+  emailProductUpdates Boolean @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  addresses         Address[]
+  orders            Order[]
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+  professionalProfile Professional?
+  
+  @@map("users")
+}
+
+model Professional {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName      String
+  taxId             String
+  isVerified        Boolean   @default(false)
+  commissionRate    Float     @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  commissions       Commission[]
+  bulkOrders        BulkOrder[]
+  
+  @@map("professionals")
+}
+
+model Product {
+  id                String    @id @default(uuid())
+  name              String
+  slug              String    @unique
+  description       String
+  price             Float
+  compareAtPrice    Float?
+  sku               String    @unique
+  barcode           String?
+  weight            Float?
+  inventory         Int       @default(0)
+  isActive          Boolean   @default(true)
+  categoryId        String
+  category          Category  @relation(fields: [categoryId], references: [id])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  variants          ProductVariant[]
+  images            ProductImage[]
+  reviews           Review[]
+  orderItems        OrderItem[]
+  wishlistItems     WishlistItem[]
+  
+  @@map("products")
+}
+
+model ProductVariant {
+  id                String    @id @default(uuid())
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name              String
+  sku               String    @unique
+  price             Float?
+  inventory         Int       @default(0)
+  attributes        Json      // Store variant attributes as JSON
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@map("product_variants")
+}
+
+model ProductImage {
+  id                String    @id @default(uuid())
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url               String
+  altText           String?
+  sortOrder         Int       @default(0)
+  createdAt         DateTime  @default(now())
+  
+  @@map("product_images")
+}
+
+model Category {
+  id                String    @id @default(uuid())
+  name              String
+  slug              String    @unique
+  description       String?
+  parentId          String?
+  parent            Category? @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children          Category[] @relation("CategoryToCategory")
+  sortOrder         Int       @default(0)
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  products          Product[]
+  
+  @@map("categories")
+}
+
+model Order {
+  id                String    @id @default(uuid())
+  orderNumber       String    @unique
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  status            OrderStatus @default(PENDING)
+  total             Float
+  subtotal          Float
+  tax               Float
+  shipping          Float
+  discount          Float     @default(0)
+  shippingAddressId String
+  shippingAddress   Address   @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddressId  String?
+  billingAddress    Address?  @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  paymentIntentId   String?
+  paymentStatus     PaymentStatus @default(PENDING)
+  trackingNumber    String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  items             OrderItem[]
+  transactions      Transaction[]
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id                String    @id @default(uuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id])
+  quantity          Int
+  price             Float
+  total             Float
+  createdAt         DateTime  @default(now())
+  
+  @@map("order_items")
+}
+
+model Address {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              AddressType @default(SHIPPING)
+  firstName         String
+  lastName          String
+  company           String?
+  address1          String
+  address2          String?
+  city              String
+  state             String?
+  postalCode        String
+  country           String    @default("HR")
+  phone             String?
+  isDefault         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  shippingOrders    Order[]   @relation("ShippingAddress")
+  billingOrders     Order[]   @relation("BillingAddress")
+  
+  @@map("addresses")
+}
+
+model Review {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating            Int       // 1-5 stars
+  title             String?
+  comment           String?
+  isVerified        Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@map("reviews")
+}
+
+model WishlistItem {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt         DateTime  @default(now())
+  
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+model Transaction {
+  id                String    @id @default(uuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type              TransactionType
+  amount            Float
+  currency          String    @default("EUR")
+  status            TransactionStatus
+  paymentMethod     String?
+  paymentIntentId   String?
+  refundId          String?
+  metadata          Json?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@map("transactions")
+}
+
+model Commission {
+  id                String    @id @default(uuid())
+  professionalId    String
+  professional      Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  orderId           String?
+  amount            Float
+  rate              Float
+  status            CommissionStatus @default(PENDING)
+  paidAt            DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@map("commissions")
+}
+
+model BulkOrder {
+  id                String    @id @default(uuid())
+  professionalId    String
+  professional      Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  name              String
+  items             Json      // Store bulk order items as JSON
+  total             Float
+  status            BulkOrderStatus @default(DRAFT)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@map("bulk_orders")
+}
+
+// Enums
+enum Role {
+  CUSTOMER
+  PROFESSIONAL
+  MANAGER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  REFUNDED
+  FAILED
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+enum TransactionType {
+  PAYMENT
+  REFUND
+  PARTIAL_REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum CommissionStatus {
+  PENDING
+  APPROVED
+  PAID
+  CANCELLED
+}
+
+enum BulkOrderStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}

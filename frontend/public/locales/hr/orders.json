@@ -1,0 +1,74 @@
+{
+  "status": {
+    "pending": "Na čekanju",
+    "processing": "U obradi",
+    "shipped": "Poslano",
+    "delivered": "Dostavljeno",
+    "cancelled": "Otkazano",
+    "returned": "Vraćeno",
+    "refunded": "Refundirano",
+    "onHold": "Na čekanju",
+    "completed": "Završeno",
+    "failed": "Neuspjelo"
+  },
+  "paymentStatus": {
+    "pending": "Plaćanje na čekanju",
+    "authorized": "Plaćanje autorizirano",
+    "paid": "Plaćeno",
+    "refunded": "Refundirano",
+    "failed": "Plaćanje neuspjelo",
+    "cancelled": "Plaćanje otkazano",
+    "processing": "Obrada plaćanja"
+  },
+  "shippingMethod": {
+    "standard": "Standardna dostava",
+    "express": "Ekspresna dostava",
+    "overnight": "Dostava preko noći",
+    "pickup": "Osobno preuzimanje",
+    "free": "Besplatna dostava"
+  },
+  "orderDetails": {
+    "orderNumber": "Broj narudžbe",
+    "orderDate": "Datum narudžbe",
+    "orderStatus": "Status narudžbe",
+    "paymentMethod": "Način plaćanja",
+    "paymentStatus": "Status plaćanja",
+    "shippingMethod": "Način dostave",
+    "shippingAddress": "Adresa za dostavu",
+    "billingAddress": "Adresa za naplatu",
+    "subtotal": "Međuzbroj",
+    "shipping": "Dostava",
+    "tax": "Porez",
+    "discount": "Popust",
+    "total": "Ukupno",
+    "items": "Artikli",
+    "quantity": "Količina",
+    "price": "Cijena",
+    "trackingNumber": "Broj za praćenje",
+    "trackOrder": "Prati narudžbu",
+    "cancelOrder": "Otkaži narudžbu",
+    "returnOrder": "Vrati narudžbu",
+    "reorder": "Ponovi narudžbu",
+    "downloadInvoice": "Preuzmi račun",
+    "contactSupport": "Kontaktiraj podršku"
+  },
+  "notifications": {
+    "orderConfirmed": "Vaša narudžba je potvrđena",
+    "orderShipped": "Vaša narudžba je poslana",
+    "orderDelivered": "Vaša narudžba je dostavljena",
+    "orderCancelled": "Vaša narudžba je otkazana",
+    "paymentReceived": "Plaćanje primljeno",
+    "paymentFailed": "Plaćanje neuspjelo",
+    "refundIssued": "Povrat novca je izvršen"
+  },
+  "errors": {
+    "outOfStock": "Neki artikli iz vaše narudžbe nisu na zalihi",
+    "paymentDeclined": "Vaše plaćanje je odbijeno",
+    "invalidAddress": "Nevažeća adresa za dostavu",
+    "shippingUnavailable": "Dostava nije dostupna na vašu lokaciju",
+    "orderNotFound": "Narudžba nije pronađena",
+    "cannotCancel": "Ova narudžba ne može biti otkazana",
+    "cannotReturn": "Ova narudžba ne može biti vraćena",
+    "maxQuantity": "Maksimalna količina prekoračena"
+  }
+}
