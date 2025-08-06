@@ -9,7 +9,23 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { getCookie, setCookie } from "cookies-next";
+// Minimal client-side cookie helpers to avoid incompatible cookies-next dependency
+const getCookie = (name: string): string | null => {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+};
+const setCookie = (
+  name: string,
+  value: string,
+  opts?: { maxAge?: number; path?: string }
+): void => {
+  if (typeof document === "undefined") return;
+  const parts = [`${name}=${encodeURIComponent(value)}`];
+  if (opts?.maxAge) parts.push(`Max-Age=${opts.maxAge}`);
+  parts.push(`Path=${opts?.path || "/"}`);
+  document.cookie = parts.join("; ");
+};
 import {
   formatDate,
   formatNumber,
@@ -184,11 +200,6 @@ export function I18nProvider({ children }: I18nProviderProps) {
     return value;
   };
 
-  // If still loading, render a loading state or the children
-  if (loading) {
-    return <>{children}</>;
-  }
-
   // Create formatter functions bound to the current locale
   const formatDateWithLocale = (
     date: Date | string | number,
@@ -221,24 +232,22 @@ export function I18nProvider({ children }: I18nProviderProps) {
   const getTimeFormatWithLocale = () => getTimeFormat(locale);
   const getDateTimeFormatWithLocale = () => getDateTimeFormat(locale);
 
+  const value = {
+    locale,
+    setLocale,
+    t,
+    formatDate: formatDateWithLocale,
+    formatNumber: formatNumberWithLocale,
+    formatCurrency: formatCurrencyWithLocale,
+    formatPercentage: formatPercentageWithLocale,
+    formatPhoneNumber: formatPhoneNumberWithLocale,
+    formatAddress: formatAddressWithLocale,
+    getDateFormat: getDateFormatWithLocale,
+    getTimeFormat: getTimeFormatWithLocale,
+    getDateTimeFormat: getDateTimeFormatWithLocale,
+  };
+
   return (
-    <I18nContext.Provider
-      value={{
-        locale,
-        setLocale,
-        t,
-        formatDate: formatDateWithLocale,
-        formatNumber: formatNumberWithLocale,
-        formatCurrency: formatCurrencyWithLocale,
-        formatPercentage: formatPercentageWithLocale,
-        formatPhoneNumber: formatPhoneNumberWithLocale,
-        formatAddress: formatAddressWithLocale,
-        getDateFormat: getDateFormatWithLocale,
-        getTimeFormat: getTimeFormatWithLocale,
-        getDateTimeFormat: getDateTimeFormatWithLocale,
-      }}
-    >
-      {children}
-    </I18nContext.Provider>
+    <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
   );
 }

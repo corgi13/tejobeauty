@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,9 +21,16 @@ model User {
   mfaEnabled        Boolean   @default(false)
   mfaSecret         String?
   language          String    @default("en")
+  currency          String    @default("EUR")
+  timezone          String    @default("Europe/Zagreb")
   emailMarketingConsent Boolean @default(false)
   emailOrderUpdates Boolean   @default(true)
   emailProductUpdates Boolean @default(false)
+  lastLoginAt       DateTime?
+  isActive          Boolean   @default(true)
+  accountManagerId  String?
+  creditLimit       Float     @default(0)
+  paymentTerms      Int       @default(30) // days
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
@@ -32,27 +39,51 @@ model User {
   orders            Order[]
   reviews           Review[]
   wishlistItems     WishlistItem[]
-  professionalProfile Professional?
+  businessProfile   BusinessProfile?
+  customerTierId    String?
+  customerTier      CustomerTier? @relation(fields: [customerTierId], references: [id])
+  quotes            Quote[]
+  shoppingLists     ShoppingList[]
+  recurringOrders   RecurringOrder[]
+  notifications     Notification[]
+  accountManager    User?     @relation("AccountManager", fields: [accountManagerId], references: [id])
+  managedAccounts   User[]    @relation("AccountManager")
+  oauthProviders    OAuthProvider[]
+  apiKeys           ApiKey[]
   
   @@map("users")
 }
 
-model Professional {
+model BusinessProfile {
   id                String    @id @default(uuid())
   userId            String    @unique
   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   businessName      String
-  taxId             String
+  businessType      BusinessType @default(RETAILER)
+  taxId             String?
+  vatId             String?
+  businessLicense   String?
+  businessAddress   String?
+  website           String?
+  yearEstablished   Int?
+  employeeCount     Int?
+  annualRevenue     Float?
   isVerified        Boolean   @default(false)
+  verificationStatus VerificationStatus @default(PENDING)
+  verificationNotes String?
+  verifiedAt        DateTime?
   commissionRate    Float     @default(0)
+  creditRating      String?
+  paymentTerms      Int       @default(30)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
   // Relations
   commissions       Commission[]
   bulkOrders        BulkOrder[]
+  documents         BusinessDocument[]
   
-  @@map("professionals")
+  @@map("business_profiles")
 }
 
 model Product {
@@ -69,6 +100,8 @@ model Product {
   isActive          Boolean   @default(true)
   categoryId        String
   category          Category  @relation(fields: [categoryId], references: [id])
+  supplierId        String?
+  supplier          Supplier? @relation(fields: [supplierId], references: [id])
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
@@ -78,6 +111,12 @@ model Product {
   reviews           Review[]
   orderItems        OrderItem[]
   wishlistItems     WishlistItem[]
+  bulkPricings      BulkPricing[]
+  quoteItems        QuoteItem[]
+  specifications    ProductSpecification[]
+  warehouseStock    WarehouseStock[]
+  shoppingListItems ShoppingListItem[]
+  priceHistory      PriceHistory[]
   
   @@map("products")
 }
@@ -245,13 +284,17 @@ model Transaction {
 
 model Commission {
   id                String    @id @default(uuid())
-  professionalId    String
-  professional      Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  businessProfileId String
+  businessProfile   BusinessProfile @relation(fields: [businessProfileId], references: [id], onDelete: Cascade)
   orderId           String?
+  orderNumber       String?
   amount            Float
   rate              Float
+  baseAmount        Float
   status            CommissionStatus @default(PENDING)
   paidAt            DateTime?
+  paymentReference  String?
+  notes             String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
@@ -260,17 +303,356 @@ model Commission {
 
 model BulkOrder {
   id                String    @id @default(uuid())
-  professionalId    String
-  professional      Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  businessProfileId String
+  businessProfile   BusinessProfile @relation(fields: [businessProfileId], references: [id], onDelete: Cascade)
+  orderNumber       String    @unique
   name              String
   items             Json      // Store bulk order items as JSON
+  subtotal          Float
+  tax               Float     @default(0)
+  shipping          Float     @default(0)
+  discount          Float     @default(0)
   total             Float
   status            BulkOrderStatus @default(DRAFT)
+  notes             String?
+  approvedBy        String?
+  approvedAt        DateTime?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   
   @@map("bulk_orders")
 }
+
+model CustomerTier {
+  id                  String    @id @default(uuid())
+  name                String    @unique
+  minSpend            Float
+  discountPercentage  Float
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  users               User[]
+  @@map("customer_tiers")
+}
+
+model BulkPricing {
+  id           String @id @default(uuid())
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
+  minQuantity  Int
+  maxQuantity  Int
+  price        Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@map("bulk_pricings")
+}
+
+model Quote {
+  id          String      @id @default(uuid())
+  quoteNumber String      @unique
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  status      QuoteStatus @default(DRAFT)
+  subtotal    Float
+  tax         Float       @default(0)
+  shipping    Float       @default(0)
+  discount    Float       @default(0)
+  total       Float
+  validUntil  DateTime?
+  notes       String?
+  internalNotes String?
+  sentAt      DateTime?
+  viewedAt    DateTime?
+  acceptedAt  DateTime?
+  rejectedAt  DateTime?
+  convertedOrderId String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  items       QuoteItem[]
+  
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id          String   @id @default(uuid())
+  quoteId     String
+  quote       Quote    @relation(fields: [quoteId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("quote_items")
+}
+
+model ProductSpecification {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  name        String
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("product_specifications")
+}
+
+model Supplier {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  contactName String?
+  email       String?
+  phone       String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    Product[]
+  @@map("suppliers")
+}
+
+model Warehouse {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  location    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  stock       WarehouseStock[]
+  @@map("warehouses")
+}
+
+model WarehouseStock {
+  id          String   @id @default(uuid())
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("warehouse_stock")
+}
+
+model BusinessDocument {
+  id                String      @id @default(uuid())
+  businessProfileId String
+  businessProfile   BusinessProfile @relation(fields: [businessProfileId], references: [id], onDelete: Cascade)
+  type              DocumentType
+  fileName          String
+  fileUrl           String
+  fileSize          Int
+  mimeType          String
+  isVerified        Boolean     @default(false)
+  verifiedAt        DateTime?
+  verifiedBy        String?
+  notes             String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  @@map("business_documents")
+}
+
+model ShoppingList {
+  id          String            @id @default(uuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isDefault   Boolean           @default(false)
+  isShared    Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  items       ShoppingListItem[]
+  
+  @@map("shopping_lists")
+}
+
+model ShoppingListItem {
+  id             String       @id @default(uuid())
+  shoppingListId String
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity       Int          @default(1)
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  @@unique([shoppingListId, productId])
+  @@map("shopping_list_items")
+}
+
+model RecurringOrder {
+  id          String                    @id @default(uuid())
+  userId      String
+  user        User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  frequency   RecurringOrderFrequency
+  customDays  Int?                      // For custom frequency
+  nextOrderDate DateTime
+  isActive    Boolean                   @default(true)
+  items       Json                      // Store order items as JSON
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+  
+  @@map("recurring_orders")
+}
+
+model PriceHistory {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  oldPrice    Float
+  newPrice    Float
+  reason      String?
+  changedBy   String?
+  createdAt   DateTime @default(now())
+  
+  @@map("price_history")
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+  
+  @@map("notifications")
+}
+
+model OAuthProvider {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider    String   // google, microsoft, linkedin
+  providerId  String   // ID from the OAuth provider
+  email       String?
+  accessToken String?
+  refreshToken String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([provider, providerId])
+  @@map("oauth_providers")
+}
+
+model ApiKey {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  keyHash     String       @unique
+  permissions Json         // Store permissions as JSON array
+  status      ApiKeyStatus @default(ACTIVE)
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  @@map("api_keys")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String
+  resource    String
+  resourceId  String?
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  @@map("audit_logs")
+}
+
+model SystemSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("system_settings")
+}
+
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  subject     String
+  htmlContent String
+  textContent String?
+  variables   Json?    // Available template variables
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("email_templates")
+}
+
+model CurrencyRate {
+  id          String   @id @default(uuid())
+  fromCurrency String
+  toCurrency  String
+  rate        Float
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([fromCurrency, toCurrency])
+  @@map("currency_rates")
+}
+
+model TaxRate {
+  id          String   @id @default(uuid())
+  country     String
+  state       String?
+  rate        Float
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("tax_rates")
+}
+
+model ShippingZone {
+  id          String         @id @default(uuid())
+  name        String
+  countries   String[]       // Array of country codes
+  rates       ShippingRate[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  
+  @@map("shipping_zones")
+}
+
+model ShippingRate {
+  id             String         @id @default(uuid())
+  shippingZoneId String
+  shippingZone   ShippingZone   @relation(fields: [shippingZoneId], references: [id], onDelete: Cascade)
+  method         ShippingMethod
+  name           String
+  minWeight      Float?
+  maxWeight      Float?
+  minValue       Float?
+  maxValue       Float?
+  rate           Float
+  freeThreshold  Float?
+  estimatedDays  String?
+  isActive       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  
+  @@map("shipping_rates")
+}
+
 
 // Enums
 enum Role {
@@ -329,4 +711,71 @@ enum BulkOrderStatus {
   PROCESSING
   COMPLETED
   CANCELLED
+}
+
+enum BusinessType {
+  RETAILER
+  SALON
+  SPA
+  DISTRIBUTOR
+  ONLINE_STORE
+  BEAUTY_SCHOOL
+  OTHER
+}
+
+enum VerificationStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum DocumentType {
+  BUSINESS_LICENSE
+  TAX_CERTIFICATE
+  VAT_CERTIFICATE
+  BANK_STATEMENT
+  IDENTITY_DOCUMENT
+  OTHER
+}
+
+enum ShippingMethod {
+  STANDARD
+  EXPRESS
+  OVERNIGHT
+  PICKUP
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CONVERTED
+}
+
+enum RecurringOrderFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  CUSTOM
+}
+
+enum NotificationType {
+  ORDER_UPDATE
+  QUOTE_UPDATE
+  PRICE_CHANGE
+  STOCK_ALERT
+  PAYMENT_REMINDER
+  MARKETING
+}
+
+enum ApiKeyStatus {
+  ACTIVE
+  SUSPENDED
+  REVOKED
 }

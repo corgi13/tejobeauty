@@ -7,6 +7,9 @@ import AddressDisplay from "@/components/address/address-display";
 import LanguageSwitcher from "@/components/language-switcher";
 import { AddressData } from "@/lib/address/address-validation";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const SAMPLE_ADDRESSES: AddressData[] = [
   {
     street: "Ilica 123",

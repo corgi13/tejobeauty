@@ -150,13 +150,21 @@ export class CroatiaShippingService {
     orderValue: number,
     method: 'standard' | 'express' = 'standard'
   ): ShippingCalculation | null {
+    // Sanitize and validate inputs
+    if (!city || typeof city !== 'string' || typeof orderValue !== 'number' || orderValue < 0) {
+      return null;
+    }
+    
+    const sanitizedMethod = method === 'express' ? 'express' : 'standard';
+    const sanitizedOrderValue = Math.max(0, Number(orderValue) || 0);
+    
     const zone = this.getShippingZone(city);
     if (!zone) {
       return null;
     }
 
-    const baseCost = method === 'express' ? zone.expressCost : zone.standardCost;
-    const isFree = orderValue >= zone.freeShippingThreshold;
+    const baseCost = sanitizedMethod === 'express' ? zone.expressCost : zone.standardCost;
+    const isFree = sanitizedOrderValue >= zone.freeShippingThreshold;
     const cost = isFree ? 0 : baseCost;
 
     return {
@@ -173,9 +181,15 @@ export class CroatiaShippingService {
    * Get shipping zone by city
    */
   getShippingZone(city: string): CroatianShippingZone | null {
+    // Sanitize input to prevent NoSQL injection
+    if (!city || typeof city !== 'string') {
+      return null;
+    }
+    const sanitizedCity = city.replace(/[^a-zA-ZšđčćžŠĐČĆŽ\s-]/g, '').substring(0, 100).toLowerCase();
+    
     return this.shippingZones.find(zone => 
       zone.cities.some(zoneCity => 
-        zoneCity.toLowerCase() === city.toLowerCase()
+        zoneCity.toLowerCase() === sanitizedCity
       )
     ) || null;
   }

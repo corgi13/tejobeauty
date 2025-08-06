@@ -131,7 +131,12 @@ export class CroatiaBusinessService {
    * Get cities by county
    */
   getCitiesByCounty(countyCode: string): string[] {
-    const county = this.croatianCounties.find(c => c.code === countyCode);
+    // Sanitize input to prevent NoSQL injection
+    if (!countyCode || typeof countyCode !== 'string') {
+      return [];
+    }
+    const sanitizedCode = countyCode.replace(/[^A-Z]/g, '').substring(0, 10);
+    const county = this.croatianCounties.find(c => c.code === sanitizedCode);
     return county ? county.cities : [];
   }
 

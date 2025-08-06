@@ -2,5 +2,14 @@
     "snyk.issueViewOptions": {
         "ignoredIssues": true
     },
-    "claudeCodeChat.permissions.yoloMode": true
+    "claudeCodeChat.permissions.yoloMode": true,
+    "kiroAgent.configureMCP": "Disabled",
+    "github.copilot.chat.notebook.followCellExecution.enabled": true,
+    "cloudcode.autoDependencies": "off",
+    "cloudcode.updateChannel": "Insiders",
+    "cloudcode.verboseLogging": true,
+    "codingcopilot.modelDocumentLanguage": "English",
+    "codingcopilot.commitMessageLanguage": "en",
+    "codingcopilot.modelResponseLanguage": "English",
+    "codingcopilot.enableWorkspaceRules": true
 }

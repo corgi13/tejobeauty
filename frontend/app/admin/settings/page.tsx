@@ -22,7 +22,7 @@ import {
 // Mock settings data
 const mockSettings = {
   general: {
-    siteName: "Tejo Nails",
+    siteName: "Tejo Beauty",
     siteDescription:
       "Professional nail care products for salons and individuals",
     customerServiceEmail: "support@tejonails.com",
@@ -38,17 +38,17 @@ const mockSettings = {
     timeFormat: "24h",
   },
   email: {
-    fromName: "Tejo Nails",
+    fromName: "Tejo Beauty",
     fromEmail: "noreply@tejonails.com",
     smtpHost: "smtp.example.com",
     smtpPort: "587",
     smtpUsername: "smtp_user",
-    smtpPassword: "••••••••••••",
+    smtpPassword: process.env.SMTP_PASSWORD ? "••••••••••••" : "",
     enableSsl: true,
   },
   payment: {
-    stripePublicKey: "pk_test_••••••••••••••••••••••••••••••",
-    stripeSecretKey: "••••••••••••••••••••••••••••••",
+    stripePublicKey: process.env.STRIPE_PUBLIC_KEY ? "pk_test_••••••••••••••••••••••••••••••" : "",
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY ? "••••••••••••••••••••••••••••••" : "",
     enableTestMode: true,
     allowedPaymentMethods: ["card", "bank_transfer"],
     minimumOrderAmount: 10,
@@ -81,7 +81,7 @@ const mockSettings = {
   },
   integrations: {
     algoliaAppId: "ALGOLIA_APP_ID",
-    algoliaApiKey: "••••••••••••••••••••••••••••••",
+    algoliaApiKey: process.env.ALGOLIA_API_KEY ? "••••••••••••••••••••••••••••••" : "",
     googleAnalyticsId: "G-XXXXXXXXXX",
     facebookPixelId: "",
   },

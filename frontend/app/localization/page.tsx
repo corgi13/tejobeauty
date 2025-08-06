@@ -4,6 +4,9 @@ import { useI18n } from "@/lib/i18n/i18n-provider";
 import LocalizationDemo from "@/components/localization-demo";
 import LanguageSwitcher from "@/components/language-switcher";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default function LocalizationPage() {
   const { t } = useI18n();
 

@@ -186,18 +186,33 @@ function sendEvent(event: TrackingEvent): void {
     console.log("Tracking event:", fullEvent);
   }
 
+  // Get CSRF token from meta tag or cookie
+  const csrfToken = getCSRFToken();
+
   // Send the event to the backend API
   fetch("/api/tracking/events", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-CSRF-Token": csrfToken,
     },
     body: JSON.stringify(fullEvent),
+    credentials: 'same-origin',
     // Use keepalive to ensure the request completes even if the page is unloading
     keepalive: true,
   }).catch((error) => {
     console.error("Failed to send tracking event:", error);
   });
+}
+
+function getCSRFToken(): string {
+  // Try to get CSRF token from meta tag first
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
+  
+  // Fallback to cookie
+  const cookieMatch = document.cookie.match(/csrftoken=([^;]+)/);
+  return cookieMatch ? cookieMatch[1] : '';
 }
 
 function addEventListeners(): void {

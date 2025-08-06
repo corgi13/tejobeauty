@@ -103,14 +103,11 @@ class AuthService {
       if (response.data) {
         const { access_token, user } = response.data;
 
-        if (typeof window !== "undefined") {
-          localStorage.setItem("auth_token", access_token);
-        }
-        apiClient.setToken(access_token);
+        await this.setSecureToken(access_token);
 
         this.setState({
           user,
-          token: access_token,
+          token: 'secure-token',
           isAuthenticated: true,
           isLoading: false,
         });
@@ -152,14 +149,11 @@ class AuthService {
       if (response.data) {
         const { access_token, user } = response.data;
 
-        if (typeof window !== "undefined") {
-          localStorage.setItem("auth_token", access_token);
-        }
-        apiClient.setToken(access_token);
+        await this.setSecureToken(access_token);
 
         this.setState({
           user,
-          token: access_token,
+          token: 'secure-token',
           isAuthenticated: true,
           isLoading: false,
         });
@@ -186,6 +180,8 @@ class AuthService {
   }
 
   private clearAuth() {
+    this.clearSecureToken();
+    
     if (typeof window !== "undefined") {
       localStorage.removeItem("auth_token");
     }
@@ -196,6 +192,39 @@ class AuthService {
       isAuthenticated: false,
       isLoading: false,
     });
+  }
+
+  private async setSecureToken(token: string): Promise<void> {
+    try {
+      await fetch('/api/auth/set-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+        credentials: 'same-origin'
+      });
+    } catch (error) {
+      console.error('Failed to set secure token:', error);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("auth_token", token);
+      }
+      apiClient.setToken(token);
+    }
+  }
+
+  private async clearSecureToken(): Promise<void> {
+    try {
+      await fetch('/api/auth/clear-token', {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+    } catch (error) {
+      console.error('Failed to clear secure token:', error);
+    }
+  }
+
+  private getTokenFromStorage(): string | null {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("auth_token");
   }
 
   async refreshProfile(): Promise<boolean> {
@@ -214,4 +243,3 @@ class AuthService {
 }
 
 export const authService = AuthService.getInstance();
-export default authService;

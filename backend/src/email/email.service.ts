@@ -33,16 +33,31 @@ export class EmailService {
     templateName: string,
     locale: string,
   ): Promise<string> {
+    // Validate and sanitize template name to prevent path traversal
+    const allowedTemplates = ['welcome', 'password-reset', 'order-confirmation', 'email-verification'];
+    const sanitizedTemplateName = path.basename(templateName.replace(/[^a-zA-Z0-9-_]/g, ''));
+    
+    if (!allowedTemplates.includes(sanitizedTemplateName)) {
+      throw new Error(`Invalid template name: ${templateName}`);
+    }
+
     // Default to English if the requested locale is not available
     const availableLocales = ["en", "hr"];
-    const templateLocale = availableLocales.includes(locale) ? locale : "en";
+    const sanitizedLocale = availableLocales.includes(locale) ? locale : "en";
 
     const templatePath = path.join(
       __dirname,
       "templates",
-      templateLocale,
-      `${templateName}.html`,
+      sanitizedLocale,
+      `${sanitizedTemplateName}.html`,
     );
+    
+    // Ensure the resolved path is within the templates directory
+    const templatesDir = path.join(__dirname, "templates");
+    const resolvedPath = path.resolve(templatePath);
+    if (!resolvedPath.startsWith(path.resolve(templatesDir))) {
+      throw new Error('Invalid template path');
+    }
 
     try {
       return fs.readFileSync(templatePath, "utf8");

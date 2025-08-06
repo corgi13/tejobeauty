@@ -153,7 +153,7 @@ export default function ProfessionalPage() {
               Professional Nail Care Solutions
             </h1>
             <p className="text-xl mb-8 text-primary-100">
-              Join thousands of nail professionals who trust Tejo Nails for
+              Join thousands of nail professionals who trust Tejo Beauty for
               their business needs. Get exclusive access to professional
               products, bulk pricing, and dedicated support.
             </p>
